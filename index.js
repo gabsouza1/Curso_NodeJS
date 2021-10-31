@@ -30,9 +30,10 @@ const Post = require('./models/Posts');
 
 
     app.post('/add', (req, res) => {
+        const { titulo, conteudo} = req.params
         Post.create({
-            titulo: req.body.titulo,
-            conteudo: req.body.conteudo
+            titulo: titulo,
+            conteudo: conteudo
         }).then(() => {
             res.redirect('/')
         }).catch((err) => {
@@ -40,6 +41,15 @@ const Post = require('./models/Posts');
         })
     })
 
+
+    app.get('/deletar/:id', (req, res) => {
+        const { id } = req.params
+        Post.destroy({where: {'id': id}}).then(function(){
+        res.send('Postagem deletada com sucesso!')
+    }).catch(function(erro){
+        res.send('Postagem inexistente')
+    })
+    })
 
 
 
