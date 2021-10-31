@@ -2,6 +2,7 @@ var express = require('express');
 var app = express();
 const handlebars = require('express-handlebars');
 const bodyparser = require('body-parser');
+const Post = require('./models/Posts');
 
 //Configurando o handlesbars
     //Config
@@ -15,19 +16,34 @@ const bodyparser = require('body-parser');
 
 //Rotas
 
+
+    app.get('/', (req, res) => {
+        Post.findAll({order: [['id', 'DESC']]}).then((posts) => {
+            res.render('home', {posts: posts});
+        })
+
+    })
+
     app.get('/cad', (req, res) => {
         res.render(__dirname + '/views/layouts/formulario')
     })
 
 
     app.post('/add', (req, res) => {
-        res.send(`TEXTO: ${req.body.titulo} CONTEUDO: ${req.body.conteudo}`)
+        Post.create({
+            titulo: req.body.titulo,
+            conteudo: req.body.conteudo
+        }).then(() => {
+            res.redirect('/')
+        }).catch((err) => {
+            res.send('Houve um erro: ' + err.message)
+        })
     })
 
 
 
 
-    app.listen(3000, function(){
+    app.listen(3000, () => {
     console.log('Servidor rodando!!!!')
 })
 
